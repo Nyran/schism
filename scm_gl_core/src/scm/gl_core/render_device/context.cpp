@@ -972,6 +972,37 @@ render_context::draw_elements(const int in_count, const int in_start_index, cons
     gl_assert(glapi, leaving render_context::draw_elements());
 }
 
+void
+render_context::multi_draw_arrays(const primitive_topology in_topology, const int* in_first_indices, const int* in_counts, const int draw_count) {
+    const opengl::gl_core& glapi = opengl_api();
+
+    bool invalid_value_encountered = false;
+    if (0 > draw_count)  {
+        invalid_value_encountered = true;
+    } else {
+        for (int draw_idx = 0; draw_idx < draw_count; ++draw_idx) {
+            if (0 > in_first_indices[draw_idx] || 0 > in_counts[draw_idx]) {
+                invalid_value_encountered = true;
+                break;
+            }
+        }
+    }
+
+    if (invalid_value_encountered) {
+        state().set(object_state::OS_ERROR_INVALID_VALUE);
+        SCM_GL_DGB("render_context::draw_arrays(): error invalid count or start index (< 0) " << "('" << state().state_string() << "')");        
+        return;
+    }
+
+    pre_draw_setup();
+
+    glapi.glMultiDrawArrays(util::gl_primitive_topology(in_topology), in_first_indices, in_counts, draw_count);
+
+    post_draw_setup();
+
+    gl_assert(glapi, leaving render_context::draw_elements());
+}
+
 bool
 render_context::make_resident(const buffer_ptr& in_buffer,
                               const access_mode in_access)
