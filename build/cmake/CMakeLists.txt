@@ -14,7 +14,7 @@ include(schism_platform)
 include(schism)
 include(schism_compiler)
 
-option(SCM_ENABLE_CUDA_CL_SUPPORT         "Enable and OpenCL/CUDA functionality and OpenGL interoperability."                OFF)
+option(SCM_ENABLE_CUDA_CL_SUPPORT         "Enable OpenCL/CUDA functionality and OpenGL interoperability."                OFF)
 
 # set some directory constants
 set(GLOBAL_EXT_DIR ${schism_SOURCE_DIR}/../../externals)
